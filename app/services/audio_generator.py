@@ -29,6 +29,8 @@ class AudioGenerator:
         logger.info(
             f"Successfully generated audio for line for job with id '{job_id}'."
         )
+
+        # Unpacks virtual mp3 file into raw audio frames for Pydub to manipulate
         return AudioSegment.from_file(io.BytesIO(audio_bytes), format="mp3")
 
     def generate_audio(self, job_id: str, script: PodcastScript):
