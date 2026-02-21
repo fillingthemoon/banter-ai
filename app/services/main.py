@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import os
 import logging
@@ -8,6 +9,7 @@ from app.models.job_manager import job_manager
 from app.models.result import PodcastScript
 from dotenv import load_dotenv
 
+from app.services.audio_generator import audio_generator
 from app.services.utils import MODEL, SYSTEM_PROMPT
 
 logger = logging.getLogger(__name__)
@@ -45,22 +47,17 @@ class PodcastProcessor:
             logger.info(f"Successfully generated script for job with id '{job_id}'.")
             return validated_content
 
-    def generate_audio(self, job_id: str):
-        logger.info(f"Generating audio for job with id '{job_id}'...")
-        # audio_segments = []
+    def export_script(self, script: PodcastScript):
+        path = "podcasts/scripts"
+        os.makedirs(path, exist_ok=True)
 
-        # for _, line in enumerate(script.content):
-        #     voice_id = (
-        #         "ALEX_VOICE_ID" if line.speaker.lower() == "alex" else "SAM_VOICE_ID"
-        #     )
+        script_dict = script.model_dump(mode="json")
 
-        #     audio = generate_audio_for_line(line.text, voice_id)
-        #     audio_segments.append(audio)
+        filename = f"script_{datetime.now().strftime('%Y%m%d_%H%M')}.json"
+        file_path = os.path.join("podcasts/scripts", filename)
 
-        # final_audio = sum(audio_segments)
-        # final_audio.export(f"podcasts/{job_id}.mp3", format="mp3")
-
-        logger.info(f"Successfully generated audio for job with id '{job_id}'.")
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(script_dict, f, indent=4)
 
     def process_podcast(self, job_id: str, text_input: str):
         logger.info(
@@ -69,7 +66,9 @@ class PodcastProcessor:
 
         script = self.generate_script(job_id, text_input)
 
-        self.generate_audio(job_id)
+        self.export_script(script)
+
+        # audio_generator.generate_audio(job_id, script)
 
         job = job_manager.get_job(job_id)
 

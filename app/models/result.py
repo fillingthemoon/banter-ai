@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Literal
+from typing import Literal
 
 
 class DialogueLine(BaseModel):
@@ -10,4 +10,4 @@ class DialogueLine(BaseModel):
 
 class PodcastScript(BaseModel):
     title: str
-    content: List[DialogueLine]
+    content: list[DialogueLine]
