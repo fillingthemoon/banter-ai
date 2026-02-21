@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import List, Literal
 
+
 class DialogueLine(BaseModel):
     speaker: Literal["host", "guest"]
     text: str

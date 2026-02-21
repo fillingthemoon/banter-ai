@@ -17,7 +17,9 @@ async def start_podcast_gen(text_input: str, background_tasks: BackgroundTasks):
     background_tasks.add_task(process_podcast, new_job.id, text_input)
 
     job_receipt = JobReceipt(
-        job_id=new_job.id, status=new_job.status, message="Podcast generation started!"
+        job_id=new_job.id,
+        status=new_job.status,
+        message=f"Podcast generation for job with id '{new_job.id}' started!",
     )
 
     return job_receipt
@@ -28,6 +30,6 @@ async def get_status(job_id: str):
     job = job_manager.get_job(job_id)
 
     if not job:
-        raise HTTPException(status_code=404, detail="Job not found")
+        raise HTTPException(status_code=404, detail=f"Job with id '{job_id}' not found")
 
     return job
