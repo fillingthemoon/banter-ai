@@ -3,7 +3,7 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException
 from app.models.job_manager import JobManager, job_manager
 from app.models.job import Job
 from app.models.job_receipt import JobReceipt
-from app.services.main import process_podcast
+from app.services.main import podcast_processor
 
 router = APIRouter()
 
@@ -14,7 +14,7 @@ async def start_podcast_gen(text_input: str, background_tasks: BackgroundTasks):
 
     job_manager.add_job(new_job)
 
-    background_tasks.add_task(process_podcast, new_job.id, text_input)
+    background_tasks.add_task(podcast_processor.process_podcast, new_job.id, text_input)
 
     job_receipt = JobReceipt(
         job_id=new_job.id,
