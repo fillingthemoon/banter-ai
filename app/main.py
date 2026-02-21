@@ -1,13 +1,21 @@
+import logging
+
 from fastapi import FastAPI
+from app.routers.main import router as main_router
 
-app = FastAPI()
+LOGGING_FORMAT = (
+    "%(asctime)s - %(name)s - %(funcName)s:%(lineno)d - %(levelname)s - %(message)s"
+)
+
+logging.basicConfig(level=logging.INFO, format=LOGGING_FORMAT)
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+def get_application() -> FastAPI:
+    application = FastAPI()
+
+    application.include_router(main_router)
+
+    return application
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str | None = None):
-    return {"item_id": item_id, "q": q}
+app = get_application()
